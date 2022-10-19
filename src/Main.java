@@ -127,13 +127,19 @@ public class Main {
 
 
             case "2":
+                // Remove powerlifter
                 String fullName = getUserInput("Enter the full name of the powerlifter you want to remove: ");
-                powerlifters.removePowerlifter(fullName);
+                boolean isFound = powerlifters.removePowerlifter(fullName);
+                clearScreen();
 
-                return "Powerlifter has been successfully removed! \n";
+                if (isFound)
+                    return fullName + " was successfully removed from the database! \n";
+
+                else
+                    return fullName + " was not found in the database. Check your spelling! \n";
 
             case "3":
-                // Print list of powerlifters with one line description of each lifter.
+                // Print list of powerlifters with one line description of each lifter
                 powerlifters.printList();
                 return "\n";
 

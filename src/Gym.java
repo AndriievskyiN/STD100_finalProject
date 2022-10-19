@@ -33,7 +33,7 @@ public class Gym {
         currentLength++;
     }
 
-    public void removePowerlifter(String fullName){
+    public boolean removePowerlifter(String fullName){
         /*
         ----------------------------------------------------
         Removes a powerlifter from the array of powerlifters
@@ -44,21 +44,32 @@ public class Gym {
         ----------------------------------------------------
          */
 
-        Powerlifter[] temp = new Powerlifter[currentLength-1];
         int indexToRemove = 0;
+        boolean found = false;
 
+        // Get the index of the powerlifter to remove.
         for (int i = 0; i < currentLength; i++){
-
-            if (powerlifters[i].fullName.equals(fullName))
+            if (powerlifters[i].fullName.equals(fullName)) {
                 indexToRemove = i;
+                found = true;
 
+            }
         }
 
-        System.arraycopy(powerlifters, 0, temp, 0, indexToRemove);
-        System.arraycopy(powerlifters, indexToRemove+1, temp, indexToRemove, temp.length-indexToRemove);
+        if (found){
+            // Shrink the array size by 1
+            Powerlifter[] temp = new Powerlifter[currentLength-1];
 
-        powerlifters = temp;
-        currentLength--;
+            // Copy all elements from powerlifters to temp, omitting the powerlifter that the user wants to remove.
+            System.arraycopy(powerlifters, 0, temp, 0, indexToRemove);
+            System.arraycopy(powerlifters, indexToRemove+1, temp, indexToRemove, temp.length-indexToRemove);
+
+            // Reset main variables.
+            powerlifters = temp;
+            currentLength--;
+        }
+
+        return found;
     }
 
     public void printOne(int index){
