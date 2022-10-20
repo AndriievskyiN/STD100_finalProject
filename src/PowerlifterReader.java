@@ -3,8 +3,8 @@ import java.util.ArrayList;
 
 public class PowerlifterReader {
     // Handles reading powerlifters from a file
-    private final String fileName = "powerlifters.txt";
-    private Gym powerlifters;
+    private final String fileName = "../powerlifters.txt";
+    private final Gym powerlifters;
 
 
     PowerlifterReader(Gym powerlifters){
@@ -13,6 +13,18 @@ public class PowerlifterReader {
 
 
     private Powerlifter parsePowerlifter(String lineToParse){
+        /*
+        ----------------------------------------------------
+        Parses a string and creates an instance of Powerlifter.
+        ----------------------------------------------------
+        Arguments:
+            lineToParse: (String) Line to parse.
+       ----------------------------------------------------
+       Returns:
+            (Powerlifter) powerlifter object made of the parsed string.
+       ----------------------------------------------------
+         */
+
         String[] data = lineToParse.split(", ");
         String fullName = data[0];
         String ageClass = data[1];
@@ -24,14 +36,15 @@ public class PowerlifterReader {
 
         Powerlifter powerlifter = new Powerlifter(fullName, ageClass, weightClass);
         powerlifter.setBestSquatKg(bestSquat);
-        powerlifter.setBestSquatKg(bestBench);
+        powerlifter.setBestBenchKg(bestBench);
         powerlifter.setBestDeadliftKg(bestDeadlift);
+        powerlifter.setBestTotalKg();
 
         return powerlifter;
 
     }
 
-    public void readFromFile() throws IOException{
+    public void readFromFile(){
         /*
         ----------------------------------------------------
         Reads information from a file and prints it.
@@ -64,11 +77,14 @@ public class PowerlifterReader {
 
     }
 
-    public void importFromFile() throws IOException{
+    public String importFromFile(){
         /*
          ----------------------------------------------------
          Reads a file with information about powerlifters, and
          saves it to the database.
+         ----------------------------------------------------
+         Returns:
+            (String) output message for the dialogue.
          ----------------------------------------------------
          */
 
@@ -90,8 +106,10 @@ public class PowerlifterReader {
 
             }
 
+            return "Powerlifters have been successfully imported! \n";
+
         } catch (Exception e){
-            System.out.println("Something went wrong...");
+            return "Something went wrong...";
         }
 
 

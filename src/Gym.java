@@ -6,7 +6,12 @@ public class Gym {
     private static Powerlifter[] powerlifters = new Powerlifter[count];
     private int currentLength = 0;
 
-    public static Powerlifter[] getPowerliftersAsArray(){
+    public Powerlifter[] getPowerliftersAsArray(){
+        /*
+        ----------------------------------------------------
+        Returns the array of powerlifters.
+        ----------------------------------------------------
+         */
         return powerlifters;
     }
 
@@ -74,7 +79,7 @@ public class Gym {
         return found;
     }
 
-    public void getOne(int index){
+    public Powerlifter getOne(int index){
         /*
         ----------------------------------------------------
          Prints one powerlifter based on the index.
@@ -86,11 +91,12 @@ public class Gym {
 
         // Check if the index >= 0 AND index <= the current length of the array
         if ((index >= 0) && (index <= currentLength)){
-            System.out.println(powerlifters[index]);
+            return powerlifters[index];
 
         } else {
             // Otherwise print an error (We don't want to print null values or get the IndexOutOfBounds Error)
             System.out.println("Index is invalid!");
+            return null;
         }
 
     }
@@ -246,6 +252,10 @@ public class Gym {
 
         // Find the nth percentile
         int percentileIndex = (int) (Math.floor((percentile * currentLength / 100)) - 1);
+
+        if (percentileIndex < 0)
+            percentileIndex = 0;
+
         float percentileValue = sortedArray[percentileIndex];
 
         System.out.println("Powerlifters that fall under the " + percentile + "th percentile: ");
@@ -260,7 +270,6 @@ public class Gym {
     }
 
 
-    // Method to sort an array (used to find the nth percentile of an array)
     private float[] sortArray(float[] array){
         /*
         ----------------------------------------------------
@@ -298,6 +307,20 @@ public class Gym {
     }
 
     public boolean powerlifterExists(String fullName){
+        /*
+        ----------------------------------------------------
+        Checks if a powerlifter already exists in the database.
+        ----------------------------------------------------
+        Arguments:
+            fullName: (String) Full name of the powerlifter to
+            check.
+        ----------------------------------------------------
+        Returns:
+            (boolean) true if the powerlifter does already exist,
+            and false otherwise.
+        ----------------------------------------------------
+         */
+
         if (powerlifters[0] == null)
             return false;
 

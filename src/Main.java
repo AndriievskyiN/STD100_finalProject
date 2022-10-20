@@ -1,12 +1,9 @@
-import org.w3c.dom.ls.LSOutput;
-
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    private static Gym powerlifters = new Gym();
-    private static final PowerlifterWriter powerlifterWriter = new PowerlifterWriter();
+    private static final Gym powerlifters = new Gym();
+    private static final PowerlifterWriter powerlifterWriter = new PowerlifterWriter(powerlifters);
     private static final PowerlifterReader powerlifterReader = new PowerlifterReader(powerlifters);
 
     // Main method that runs the whole program
@@ -47,7 +44,7 @@ public class Main {
         Scanner scn = new Scanner(System.in);
 
         System.out.print(prompt);
-        String userInput = scn.nextLine();
+        String userInput = scn.nextLine().trim();
 
         return userInput;
     }
@@ -74,7 +71,7 @@ public class Main {
     public static String getUserOption(){
         /*
         ----------------------------------------------------
-        Prompts the user with 7 options to use the database.
+        Prompts the user with 11 options to use the database.
         ----------------------------------------------------
         Returns:
             (String) User input.
@@ -84,14 +81,15 @@ public class Main {
         String userInput = getUserInput(
                 "Choose and option to proceed: " +
                         "\n1. Add powerlifter to the database " +
-                        "\n2. Remove powerlifter from the database " +
-                        "\n3. Print list of powerlifters (one line info)" +
-                        "\n4. Print all powerlifters (short info)" +
-                        "\n5. Print all powerlifters (full info)" +
-                        "\n6. Sort all powerlifters (based on a lift or total)" +
-                        "\n7. Search powerlifters by name" +
-                        "\n8. Search powerlifters by percentile" +
-                        "\n9. Save powerlifters to file" +
+                        "\n2. Update powerlifter" +
+                        "\n3. Remove powerlifter from the database " +
+                        "\n4. Print list of powerlifters (one line info)" +
+                        "\n5. Print all powerlifters (short info)" +
+                        "\n6. Print all powerlifters (full info)" +
+                        "\n7. Sort all powerlifters (based on a lift or total)" +
+                        "\n8. Search powerlifters by name" +
+                        "\n9. Search powerlifters by percentile" +
+                        "\n10. Interact with files" +
                         "\n0. Exit the database" +
                         "\n-------------------------------" +
                         "\nType the corresponding number to choose an option: ");
@@ -114,6 +112,8 @@ public class Main {
         ----------------------------------------------------
          */
 
+        String outputMessage;
+
         clearScreen();
         switch (userInput){
             case "0":
@@ -130,6 +130,12 @@ public class Main {
                 // Add powerlifter
                 String[] powerlifterInfo = getPowerlifter();
                 Powerlifter powerlifter = new Powerlifter(powerlifterInfo);
+
+                // Check if the given powerlifter already exists
+                if ((powerlifters.powerlifterExists(powerlifter.fullName)))
+                    return "\n";
+
+                // Otherwise add the powerlifter to the array
                 powerlifters.add(powerlifter);
 
                 // Set best lifts
@@ -140,6 +146,13 @@ public class Main {
 
 
             case "2":
+                // Update information about a lifter
+                outputMessage = updatePowerlifter();
+
+                clearScreen();
+                return outputMessage + "\n";
+
+            case "3":
                 // Remove powerlifter
                 String fullName = getUserInput("Enter the full name of the powerlifter you want to remove: ");
                 boolean isFound = powerlifters.removePowerlifter(fullName);
@@ -151,22 +164,22 @@ public class Main {
                 else
                     return fullName + " was not found in the database. Check your spelling! \n";
 
-            case "3":
+            case "4":
                 // Print list of powerlifters with one line description of each lifter
                 powerlifters.printList();
                 return "\n";
 
-            case "4":
+            case "5":
                 // Print short information about all the lifters
                 powerlifters.printAll(true);
                 return "\n";
 
-            case "5":
+            case "6":
                 // Print full information about the lifters
                 powerlifters.printAll(false);
                 return "\n";
 
-            case "6":
+            case "7":
                 // Sor the lifters
                 String sortBy = getUserInput(
                         "What do you want to sort the lifters by? \nSquat, bench, deadlift or total? "
@@ -177,14 +190,14 @@ public class Main {
                 clearScreen();
                 return "\nPowerlifters have been sorted! \n";
 
-            case "7":
+            case "8":
                 // Find lifters by name
                 String searchKey = getUserInput("Enter a search key: ");
                 powerlifters.find(searchKey);
 
                 return "\n";
 
-            case "8":
+            case "9":
                 // Find lifters by percentile
                 String percentileSortBy = getUserInput(
                         "What lift do you want to find the percentile in? "
@@ -199,22 +212,24 @@ public class Main {
                 return "\n";
 
 
-            case "9":
-                // Save information about powerlifters to a file
+            case "10":
+                // Interact with powerlifters.txt
 
                 /*
-                   To be honest, I don't feel like my implementation of writing to a file is good.
+                   To be honest, I don't feel like my implementation of working with files is good.
                    I would appreciate if you gave me an idea of how to do it more efficiently.
                  */
 
-                try {
-                    powerlifterWriter.saveToFile(powerlifters.getPowerliftersAsArray());
+                String userOption = getUserInput(
+                        "Do you want to: " +
+                                "\n1. Write information to a file?" +
+                                "\n2. Read and print information from a file?" +
+                                "\n3. Import information from a file?" +
+                                "\nEnter your option here: "
+                );
 
-                } catch (Exception e){
-                    System.out.println("Encountered a problem while writing to a file...");
-                }
-
-                return "Data has been successfully saved! \n";
+                outputMessage = interactWithFiles(userOption);
+                return outputMessage;
 
             default:
                 return "Option was invalid!";
@@ -261,7 +276,6 @@ public class Main {
         return powerlifterInfo;
     }
 
-
     public static void setPowerlifterLifts(Powerlifter powerlifter){
         /*
         ----------------------------------------------------
@@ -296,6 +310,133 @@ public class Main {
         powerlifter.setBestDeadliftKg(bestLiftsKg[2]);
         powerlifter.setBestTotalKg();
 
+    }
+
+    public static String updatePowerlifter(){
+
+        if (powerlifters.getPowerliftersAsArray()[0] == null)
+            return "The database is empty!\n";
+
+        powerlifters.printList();
+        int userIndex = Integer.parseInt(
+                getUserInput("\nEnter the number of the powerlifter you want to update: "));
+
+        Powerlifter powerlifter = powerlifters.getOne(userIndex - 1);
+        String powerlifterName = powerlifter.fullName;
+
+        String userOption = getUserInput(
+                "Do you want to: " +
+                        "\n1. Update the name?" +
+                        "\n2. Update the age class?" +
+                        "\n3. Update the weight class?" +
+                        "\n4. Update best squat?" +
+                        "\n5. Update best bench press?" +
+                        "\n6. Update best deadlift?" +
+                        "\n------------------------" +
+                        "\nEnter your option here: "
+        );
+
+
+        switch (userOption){
+            case "1":
+                String newName = getUserInput("How do you want to rename the lifter? ");
+                powerlifter.fullName = newName;
+
+                return powerlifterName + " is now " + newName + "! \n";
+
+            case "2":
+                String newAgeClass = getUserInput("What is the new age class of the lifter? ");
+                powerlifter.ageClass = newAgeClass;
+
+                return powerlifterName + "'s age class is now: " + newAgeClass;
+
+            case "3":
+                String newWeightClass = getUserInput("What is the new weight class of the lifter? ");
+                powerlifter.weightClass = newWeightClass;
+
+                return powerlifterName + "'s weight class is now: " + newWeightClass;
+
+            case "4":
+                float newSquat = Float.parseFloat(
+                        getUserInput("What is the new best squat of the lifter? ")
+                );
+
+                // Set new best squat, and update the total
+                powerlifter.setBestSquatKg(newSquat);
+                powerlifter.setBestTotalKg();
+
+                return powerlifterName + "'s best squat has been updated to " + newSquat;
+
+            case "5":
+                float newBench = Float.parseFloat(
+                        getUserInput("What is the new best bench of the lifter? ")
+                );
+
+                // Set new best bench, and update the total
+                powerlifter.setBestBenchKg(newBench);
+                powerlifter.setBestTotalKg();
+
+                return powerlifterName + "'s best bench has been updated to " + newBench;
+
+            case "6":
+                float newDeadlift = Float.parseFloat(
+                        getUserInput("What is the new best deadlift of the lifter? ")
+                );
+
+                // Set new best deadlift, and update the total
+                powerlifter.setBestDeadliftKg(newDeadlift);
+                powerlifter.setBestTotalKg();
+
+                return powerlifterName + "'s best deadlift has been updated to " + newDeadlift;
+
+            default:
+                return "Option was invalid! \n";
+
+        }
+
+
+
+
+
+    }
+
+    public static String interactWithFiles(String userOption) {
+        clearScreen();
+        String outputMessage;
+
+        switch (userOption){
+            case "1":
+                try {
+                    outputMessage = powerlifterWriter.saveToFile();
+                    return outputMessage;
+
+                } catch (Exception e){
+                    return "Something went wrong...\n";
+
+                }
+
+            case "2":
+                try{
+                    powerlifterReader.readFromFile();
+                    return "\n";
+
+                } catch (Exception e){
+                    return "Something went wrong...\n";
+                }
+
+            case "3":
+                try {
+                    outputMessage = powerlifterReader.importFromFile();
+                    return outputMessage;
+
+                } catch (Exception e){
+                    System.out.println("Something went wrong...");
+                }
+
+            default:
+                return "Invalid option! \n";
+
+        }
     }
 
 

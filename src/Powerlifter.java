@@ -8,7 +8,7 @@ public class Powerlifter {
     private float bestDeadliftKg;
     private float bestTotalKg;
 
-    private static float kgToLbs = 2.204623f;
+    private static final float kgToLbs = 2.204623f;
 
     // Constructor
     Powerlifter(String... userInfo){
@@ -34,6 +34,7 @@ public class Powerlifter {
         this.bestTotalKg = bestSquatKg + bestBenchKg + bestDeadliftKg;
     }
 
+
     // Getters
     public float getBestSquatKg(){
         return bestSquatKg;
@@ -51,52 +52,80 @@ public class Powerlifter {
         return bestTotalKg;
     }
 
-    // Get the best squat/bench/deadlift/total based on the string input.
-    // Used in the sort method in Gym.
 
     public float getBest(String lift) {
-        switch (lift.toLowerCase()) {
-            case "squat":
-                return getBestSquatKg();
+        /*
+        ----------------------------------------------------
+        Gets best specified by the user lift of the powerlifter.
+        Used in the sort method in Gym.
+        ----------------------------------------------------
+        Arguments:
+            lift: (String) Type of lift to return (e.g. squat()
+        ----------------------------------------------------
+        Returns:
+            (float) Best lift of the powerlifter
+         */
 
-            case "bench":
-                return getBestBenchKg();
-
-            case "deadlift":
-                return getBestDeadliftKg();
-
-            case "total":
-                return getBestTotalKg();
-
-            default:
-                return -1;
-        }
+        return switch (lift.toLowerCase()) {
+            case "squat" -> getBestSquatKg();
+            case "bench" -> getBestBenchKg();
+            case "deadlift" -> getBestDeadliftKg();
+            case "total" -> getBestTotalKg();
+            default -> -1;
+        };
     }
 
-    // Methods to convert best results to lbs
     public void getBestSquatLbs(){
+        /*
+        ----------------------------------------------------
+        Prints the converted from kg to lbs best squat.
+        ----------------------------------------------------
+         */
+
         float result = bestSquatKg * kgToLbs;
         System.out.println("Best Squat in pounds: " + result);
     }
 
     public void getBestBenchLbs(){
+        /*
+        ----------------------------------------------------
+        Prints the converted from kg to lbs best bench.
+        ----------------------------------------------------
+         */
+
         float result = bestBenchKg * kgToLbs;
         System.out.println("Best Bench in pounds: " + result);
     }
 
     public void getBestDeadliftLbs(){
+        /*
+        ----------------------------------------------------
+        Prints the converted from kg to lbs best deadlift.
+        ----------------------------------------------------
+         */
+
         float result = bestDeadliftKg * kgToLbs;
         System.out.println("Best deadlift in pounds: " + result);
     }
 
     public void getBestTotalLbs(){
+        /*
+        ----------------------------------------------------
+        Prints the converted from kg to lbs best total.
+        ----------------------------------------------------
+         */
         float result = bestTotalKg * kgToLbs;
         System.out.println("Best total in pounds: " + result);
     }
 
 
-    // Method to print the basic information about an athlete
     public void printShortInfo(){
+        /*
+        ----------------------------------------------------
+        Prints short information about the lifter.
+        ----------------------------------------------------
+         */
+
         System.out.println("Athlete name: " + fullName);
         System.out.println("Athlete age category: " + ageClass);
         System.out.println("Athlete weight class: " + weightClass);
@@ -104,13 +133,24 @@ public class Powerlifter {
     }
 
     public void printOneLiner(){
+        /*
+        ----------------------------------------------------
+        Prints one-line information about the powerlifter.
+        ----------------------------------------------------
+         */
+
         System.out.println(fullName +
                 " | Age class: " + ageClass +
                 " | Weight Class: " + weightClass);
     }
 
-    // Method to print information about an athlete
     public void printAthleteInfo(){
+        /*
+        ----------------------------------------------------
+        Prints full information about the lifter.
+        ----------------------------------------------------
+         */
+
         System.out.println("Athlete name: " + fullName);
         System.out.println("Athlete age category: " + ageClass);
         System.out.println("Athlete weight class: " + weightClass);
@@ -134,7 +174,7 @@ public class Powerlifter {
 
     @Override
     public String toString(){
-        return fullName + ", " + ageClass +  ", " + weightClass + ", " + + bestSquatKg + ", " + bestBenchKg +  ", " + bestDeadliftKg;
+        return fullName + ", " + ageClass +  ", " + weightClass + ", " + bestSquatKg + ", " + bestBenchKg +  ", " + bestDeadliftKg;
     }
 
 }
