@@ -105,15 +105,10 @@ public class PowerlifterReader {
                 isEmpty = nextLine == null;
 
             }
-
             return "Powerlifters have been successfully imported! \n";
 
         } catch (Exception e){
             return "Something went wrong...";
         }
-
-
     }
-
-
 }

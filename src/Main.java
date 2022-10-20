@@ -208,6 +208,7 @@ public class Main {
                                         "\nNOTE: if you enter 90, you will see all powerlifters that fall under the 90th percentile: "
                         ));
 
+                clearScreen();
                 powerlifters.findNthPercentile(userPercentile, percentileSortBy);
                 return "\n";
 
