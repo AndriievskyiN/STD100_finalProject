@@ -131,4 +131,10 @@ public class Powerlifter {
         System.out.println("------------------------------\n\n");
     }
 
+
+    @Override
+    public String toString(){
+        return fullName + ", " + ageClass +  ", " + weightClass + ", " + + bestSquatKg + ", " + bestBenchKg +  ", " + bestDeadliftKg;
+    }
+
 }

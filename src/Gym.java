@@ -2,9 +2,13 @@ import java.util.Arrays;
 
 public class Gym {
     // Gym is a collection of instances of class Powerlifter.
-    private int count = 1;
-    private Powerlifter[] powerlifters = new Powerlifter[count];
+    private static int count = 1;
+    private static Powerlifter[] powerlifters = new Powerlifter[count];
     private int currentLength = 0;
+
+    public static Powerlifter[] getPowerliftersAsArray(){
+        return powerlifters;
+    }
 
     public void add(Powerlifter powerlifter){
         /*
@@ -16,15 +20,13 @@ public class Gym {
         ----------------------------------------------------
          */
 
-        // Expand the array size, if the current length ==
+        // Expand the array size, if the current length == count
         if (!(currentLength < count)){
             count += 1;
             Powerlifter[] temp = new Powerlifter[count];
 
             // Copy all the previous values of the array of powerlifters into the new, expanded array
-            for (int i = 0; i < powerlifters.length; i++){
-                temp[i] = powerlifters[i];
-            }
+            System.arraycopy(powerlifters, 0, temp, 0, currentLength);
             powerlifters = temp;
         }
 
@@ -72,7 +74,7 @@ public class Gym {
         return found;
     }
 
-    public void printOne(int index){
+    public void getOne(int index){
         /*
         ----------------------------------------------------
          Prints one powerlifter based on the index.
@@ -84,12 +86,13 @@ public class Gym {
 
         // Check if the index >= 0 AND index <= the current length of the array
         if ((index >= 0) && (index <= currentLength)){
-            powerlifters[index].printAthleteInfo();
+            System.out.println(powerlifters[index]);
 
         } else {
             // Otherwise print an error (We don't want to print null values or get the IndexOutOfBounds Error)
             System.out.println("Index is invalid!");
         }
+
     }
 
     public void printAll(boolean shortInfo){
@@ -292,5 +295,19 @@ public class Gym {
             outIterations++;
         }
         return sortedArray;
+    }
+
+    public boolean powerlifterExists(String fullName){
+        if (powerlifters[0] == null)
+            return false;
+
+        else {
+            for (Powerlifter p : powerlifters) {
+                if (p.fullName.equalsIgnoreCase(fullName))
+                    return true;
+            }
+        }
+
+        return false;
     }
 }

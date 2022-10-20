@@ -1,16 +1,24 @@
+import org.w3c.dom.ls.LSOutput;
+
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
     private static Gym powerlifters = new Gym();
+    private static final PowerlifterWriter powerlifterWriter = new PowerlifterWriter();
+    private static final PowerlifterReader powerlifterReader = new PowerlifterReader(powerlifters);
 
     // Main method that runs the whole program
     public static void main(String[] args) {
+
         welcomeUser();
         do{
             handleOptions();
 
         }while (true);
     }
+
 
     public static void welcomeUser(){
         /*
@@ -33,6 +41,7 @@ public class Main {
         ----------------------------------------------------
         Returns:
             (String) User input.
+        ----------------------------------------------------
          */
 
         Scanner scn = new Scanner(System.in);
@@ -69,7 +78,9 @@ public class Main {
         ----------------------------------------------------
         Returns:
             (String) User input.
+        ----------------------------------------------------
          */
+
         String userInput = getUserInput(
                 "Choose and option to proceed: " +
                         "\n1. Add powerlifter to the database " +
@@ -80,6 +91,7 @@ public class Main {
                         "\n6. Sort all powerlifters (based on a lift or total)" +
                         "\n7. Search powerlifters by name" +
                         "\n8. Search powerlifters by percentile" +
+                        "\n9. Save powerlifters to file" +
                         "\n0. Exit the database" +
                         "\n-------------------------------" +
                         "\nType the corresponding number to choose an option: ");
@@ -101,6 +113,7 @@ public class Main {
             an option has been executed.
         ----------------------------------------------------
          */
+
         clearScreen();
         switch (userInput){
             case "0":
@@ -184,6 +197,24 @@ public class Main {
 
                 powerlifters.findNthPercentile(userPercentile, percentileSortBy);
                 return "\n";
+
+
+            case "9":
+                // Save information about powerlifters to a file
+
+                /*
+                   To be honest, I don't feel like my implementation of writing to a file is good.
+                   I would appreciate if you gave me an idea of how to do it more efficiently.
+                 */
+
+                try {
+                    powerlifterWriter.saveToFile(powerlifters.getPowerliftersAsArray());
+
+                } catch (Exception e){
+                    System.out.println("Encountered a problem while writing to a file...");
+                }
+
+                return "Data has been successfully saved! \n";
 
             default:
                 return "Option was invalid!";
